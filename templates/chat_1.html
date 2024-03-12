@@ -179,7 +179,7 @@
                 <div class="chatbot-profile">
                     <img src="static/logo.png" alt="EnSys">
                 </div>
-                <div class="message">Hello! We're glad to hear that you're feeling positive. How can we assist you today?</div>
+                <div class="message">We're glad to hear that you're satisfied</div>
             </div>
         </div>
         <div class="chat-input-container">
@@ -205,8 +205,15 @@
         input.style.height = (Math.min(input.scrollHeight, 100)) + 'px'; // Set height up to 100px
     }
 
-    // When the send button is clicked, send the message to the server
-    $('.send-button').click(function () {
+    // Function to send message when Enter key is pressed
+    $('.chat-input').keypress(function(event) {
+        if (event.which === 13) { // 13 is the ASCII code for Enter key
+            sendMessage();
+        }
+    });
+
+    // Function to send the user message to the server
+    function sendMessage() {
         var userMessage = $('input[name=message]').val().trim();
 
         if (userMessage === '') {
@@ -235,7 +242,7 @@
             sentiment: sentiment // Pass sentiment to the server
         }, function(response) {
             // Display the bot's response with profile and image
-            $('.chat-messages').append('<div class="message-container"><div class="chatbot-profile"><img src="ensys_profile.jpg" alt="EnSys Profile Image"></div><div class="message">' + response + '</div></div>');
+            $('.chat-messages').append('<div class="message-container"><div class="chatbot-profile"><img src="static/logo.png" alt="EnSys Profile Image"></div><div class="message">' + response + '</div></div>');
 
             // Scroll to the bottom of the container after adding the response
             $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
@@ -250,6 +257,11 @@
             // Re-enable input elements after processing
             toggleInputElements(false);
         });
+    }
+
+    // When the send button is clicked, send the message to the server
+    $('.send-button').click(function() {
+        sendMessage();
     });
 
     // Adjust input height initially
@@ -257,7 +269,7 @@
 });
 
 function endChat() {
-    window.location.href = 'https://docs.google.com/forms'; // Replace this URL with the link to your Google Form
+    window.location.href = 'https://forms.gle/3E1qQ76MvbNRFf947'; //  URL link to Google Form
 }
     </script>
 </body>
