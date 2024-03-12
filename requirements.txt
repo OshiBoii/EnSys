@@ -1,3 +1,5 @@
 openai
 flask
 vaderSentiment
+spacy
+nltk
