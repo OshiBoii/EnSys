@@ -39,12 +39,12 @@
       .bubble-button img {
         width: 300px;
         height: 300px;
-        filter: grayscale(75%); /* Convert to black and white */
+        filter: grayscale(0%); /* Convert to black and white */
         transition: filter 0.3s ease; /* Transition effect */
       }
 
       .bubble-button:hover img {
-        filter: grayscale(0%); /* Remove grayscale on hover */
+        filter: contrast(400%); /* Add image effect when you hover on it */
       }
 
       .button-label {
@@ -53,9 +53,9 @@
         text-align: center;
         font-family: 'Courier New', Courier, monospace;
         padding: 7px 7px; /* Added padding */
-        background-color: #3f4e4f;
+        background-color: #203638;
         border-radius: 5px; /* Adjusted border radius */
-        width: 125px;
+        width: fit-content;
         margin: 0 auto;
       }
 
@@ -97,11 +97,11 @@
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chatbot Website</title>
+    <title>EnSys</title>
   </head>
   <body>
     <div class="container">
-      <h1 class="search-button">HOW WAS OUR SERVICE?</h1>
+      <h1 class="search-button">HOW WAS YOUR EXPERIENCE?</h1>
       <div class="button-container">
         <div>
           <a href="/chat_1" class="bubble-button"
@@ -109,7 +109,7 @@
               src="{{ url_for('static', filename='smile.png') }}"
               alt="Button 1"
           /></a>
-          <p class="button-label">HAPPY</p>
+          <p class="button-label">SATISFIED</p>
         </div>
         <div>
           <a href="/chat_2" class="bubble-button"
@@ -117,7 +117,7 @@
               src="{{ url_for('static', filename='neutral.png') }}"
               alt="Button 2"
           /></a>
-          <p class="button-label">NEUTRAL</p>
+          <p class="button-label">MEDIOCRE</p>
         </div>
         <div>
           <a href="/chat_3" class="bubble-button"
@@ -125,7 +125,7 @@
               src="{{ url_for('static', filename='sad.png') }}"
               alt="Button 3"
           /></a>
-          <p class="button-label">SAD</p>
+          <p class="button-label">UNSATISFIED</p>
         </div>
       </div>
     </div>
