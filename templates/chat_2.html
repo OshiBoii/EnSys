@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="OpenAI Chatbot">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fefae0;
+        }
+
+        .chat-container {
+            width: 90%;
+            margin: 50px auto;
+            border-radius: 15px;
+            background-color: #5F6F52;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+            overflow-y: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: #A9B388;
+            color: #FEFAE0;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+            font-weight: bold;
+            font-size: 24px;
+            font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .chat-messages {
+            height: 400px;
+            margin: 0;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-container {
+            display: flex;
+            align-items: flex-start;
+            margin: 10px;
+        }
+
+        .message {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #3d3d3d;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            padding: 15px;
+            margin-left: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: transform 0.3s ease;
+        }
+
+        .user-message {
+            background-color: #A9B388;
+            color: #FEFAE0;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            padding: 15px;
+            margin-left: auto;
+            margin-right: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-top: 2px solid #A9B388;
+            margin-top: 20px;
+            background-color: #FEFAE0;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .chat-input {
+            width: 1020px;
+            padding: 12px;
+            border: 1;
+            border-radius: 20px;
+            background-color: #fff;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            outline: none;
+        }
+
+        .send-button, .end-button {
+            background-color: #A9B388;
+            color: #FEFAE0;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+
+        .send-button:hover, .end-button:hover {
+            background-color: #5F6F52;
+        }
+
+        /* Fun animations */
+        .message:hover,
+        .user-message:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .message-container:nth-child(odd) .message,
+        .message-container:nth-child(odd) .user-message {
+            animation: slideFromLeft 0.5s ease; /* Slide in from left for odd messages */
+        }
+
+        .message-container:nth-child(even) .message,
+        .message-container:nth-child(even) .user-message {
+            animation: slideFromRight 0.5s ease; /* Slide in from right for even messages */
+        }
+
+        @keyframes slideFromLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideFromRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+    </div>
+    <div class="chat-container">
+        <div class="chat-header">EnSys</div>
+        <div class="chat-messages">
+            <!-- Initial message from chatbot -->
+            <div class="message-container">
+                <div class="message">We hope you enjoyed, could you tell us where we lacked?</div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" name="message" placeholder="Type your message here" autocomplete="off" autofocus>
+            <input type="hidden" name="sentiment" value="Neutral"> <!-- Hidden input field for sentiment -->
+            <button class="end-button" onclick="endChat()">End</button>
+            <button class="send-button">Send</button>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+       $(document).ready(function() {
+    // Function to enable or disable input elements
+    function toggleInputElements(disabled) {
+        $('input[name=message]').prop('disabled', disabled);
+        $('.send-button').prop('disabled', disabled);
+    }
+
+    // Function to adjust input height based on content
+    function adjustInputHeight() {
+        var input = $('input[name=message]')[0];
+        input.style.height = 'auto'; // Reset height to auto
+        input.style.height = (Math.min(input.scrollHeight, 100)) + 'px'; // Set height up to 100px
+    }
+
+    // When the send button is clicked, send the message to the server
+    $('.send-button').click(function () {
+        var userMessage = $('input[name=message]').val().trim();
+
+        if (userMessage === '') {
+            return;
+        }
+
+        // Disable input elements while processing
+        toggleInputElements(true);
+
+        // Add the user message to the messages container
+        $('.chat-messages').append('<div class="message-container"><div class="user-message">' + userMessage + '</div></div>');
+
+        // Clear the input box
+        $('input[name=message]').val('');
+
+        // Reset the input's height
+        adjustInputHeight();
+
+        // Scroll to the bottom of the container when a new message is added
+        $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+        // Send the user message and sentiment to the server
+        var sentiment = $('input[name=sentiment]').val(); // Get the sentiment value
+        $.post("/chat", {
+            prompt: userMessage,
+            sentiment: sentiment // Pass sentiment to the server
+        }, function(response) {
+            // Display the bot's response
+            $('.chat-messages').append('<div class="message-container"><div class="message">' + response + '</div></div>');
+
+            // Scroll to the bottom of the container after adding the response
+            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+            // Re-enable input elements after processing
+            toggleInputElements(false);
+        }).fail(function() {
+            // Handle AJAX request failure (e.g., server not responding)
+            $('.chat-messages').append('<div class="message-container"><div class="message">Something went wrong</div></div>');
+            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+            // Re-enable input elements after processing
+            toggleInputElements(false);
+        });
+    });
+
+    // Adjust input height initially
+    adjustInputHeight();
+});
+
+function endChat() {
+    window.location.href = 'https://docs.google.com/forms'; // Replace this URL with the link to your Google Form
+}
+    </script>
+</body>
+</html>

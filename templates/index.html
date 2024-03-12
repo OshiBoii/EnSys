@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #5f6f52; /* Background color */
+        color: #fefae0; /* Text color */
+      }
+
+      .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .button-container {
+        margin: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Center the items vertically */
+      }
+
+      .bubble-button {
+        display: inline-block;
+        margin: 0 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        transition: transform 0.5s ease;
+        animation: floatAnimation 5s ease infinite alternate;
+      }
+
+      .bubble-button img {
+        width: 300px;
+        height: 300px;
+        filter: grayscale(75%); /* Convert to black and white */
+        transition: filter 0.3s ease; /* Transition effect */
+      }
+
+      .bubble-button:hover img {
+        filter: grayscale(0%); /* Remove grayscale on hover */
+      }
+
+      .button-label {
+        color: #fefae0; /* Text color */
+        font-size: 25px;
+        text-align: center;
+        font-family: 'Courier New', Courier, monospace;
+        padding: 7px 7px; /* Added padding */
+        background-color: #3f4e4f;
+        border-radius: 5px; /* Adjusted border radius */
+        width: 125px;
+        margin: 0 auto;
+      }
+
+      @keyframes floatAnimation {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      .search-button {
+        background-color: rgba(
+          71,
+          157,
+          163,
+          0.14
+        ); /* Background color with transparency */
+        color: #fefae0; /* Text color */
+        font-size: 35px; /* Adjusted font size */
+        font-family: monospace;
+        padding: 15px 50px; /* Added padding */
+        margin: 50px;
+        border: none;
+        border-radius: 20px; /* Adjusted border radius */
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transition effect */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+      }
+
+      .search-button:hover {
+        background-color: #a9b388; /* Darker background color on hover */
+      }
+    </style>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot Website</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="search-button">HOW WAS OUR SERVICE?</h1>
+      <div class="button-container">
+        <div>
+          <a href="/chat_1" class="bubble-button"
+            ><img
+              src="{{ url_for('static', filename='smile.png') }}"
+              alt="Button 1"
+          /></a>
+          <p class="button-label">HAPPY</p>
+        </div>
+        <div>
+          <a href="/chat_2" class="bubble-button"
+            ><img
+              src="{{ url_for('static', filename='neutral.png') }}"
+              alt="Button 2"
+          /></a>
+          <p class="button-label">NEUTRAL</p>
+        </div>
+        <div>
+          <a href="/chat_3" class="bubble-button"
+            ><img
+              src="{{ url_for('static', filename='sad.png') }}"
+              alt="Button 3"
+          /></a>
+          <p class="button-label">SAD</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
