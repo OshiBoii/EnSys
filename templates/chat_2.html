@@ -175,73 +175,80 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
        $(document).ready(function() {
-    // Function to enable or disable input elements
-    function toggleInputElements(disabled) {
-        $('input[name=message]').prop('disabled', disabled);
-        $('.send-button').prop('disabled', disabled);
-    }
-
-    // Function to adjust input height based on content
-    function adjustInputHeight() {
-        var input = $('input[name=message]')[0];
-        input.style.height = 'auto'; // Reset height to auto
-        input.style.height = (Math.min(input.scrollHeight, 100)) + 'px'; // Set height up to 100px
-    }
-
-    // When the send button is clicked, send the message to the server
-    $('.send-button').click(function () {
-        var userMessage = $('input[name=message]').val().trim();
-
-        if (userMessage === '') {
-            return;
+        // Function to enable or disable input elements
+        function toggleInputElements(disabled) {
+            $('input[name=message]').prop('disabled', disabled);
+            $('.send-button').prop('disabled', disabled);
         }
 
-        // Disable input elements while processing
-        toggleInputElements(true);
+        // Function to adjust input height based on content
+        function adjustInputHeight() {
+            var input = $('input[name=message]')[0];
+            input.style.height = 'auto'; // Reset height to auto
+            input.style.height = (Math.min(input.scrollHeight, 100)) + 'px'; // Set height up to 100px
+        }
 
-        // Add the user message to the messages container
-        $('.chat-messages').append('<div class="message-container"><div class="user-message">' + userMessage + '</div></div>');
-
-        // Clear the input box
-        $('input[name=message]').val('');
-
-        // Reset the input's height
-        adjustInputHeight();
-
-        // Scroll to the bottom of the container when a new message is added
-        $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
-
-        // Send the user message and sentiment to the server
-        var sentiment = $('input[name=sentiment]').val(); // Get the sentiment value
-        $.post("/chat", {
-            prompt: userMessage,
-            sentiment: sentiment // Pass sentiment to the server
-        }, function(response) {
-            // Display the bot's response
-            $('.chat-messages').append('<div class="message-container"><div class="message">' + response + '</div></div>');
-
-            // Scroll to the bottom of the container after adding the response
-            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
-
-            // Re-enable input elements after processing
-            toggleInputElements(false);
-        }).fail(function() {
-            // Handle AJAX request failure (e.g., server not responding)
-            $('.chat-messages').append('<div class="message-container"><div class="message">Something went wrong</div></div>');
-            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
-
-            // Re-enable input elements after processing
-            toggleInputElements(false);
+        // Function to send message when Enter key is pressed
+        $('.chat-input').keypress(function(event) {
+            if (event.which === 13) { // 13 is the ASCII code for Enter key
+                sendMessage();
+            }
         });
-    });
 
-    // Adjust input height initially
-    adjustInputHeight();
-});
+        // When the send button is clicked, send the message to the server
+        $('.send-button').click(function () {
+            var userMessage = $('input[name=message]').val().trim();
 
-function endChat() {
-    window.location.href = 'https://docs.google.com/forms'; // Replace this URL with the link to your Google Form
-}
+            if (userMessage === '') {
+                return;
+            }
+
+            // Disable input elements while processing
+            toggleInputElements(true);
+
+            // Add the user message to the messages container
+            $('.chat-messages').append('<div class="message-container"><div class="user-message">' + userMessage + '</div></div>');
+
+            // Clear the input box
+            $('input[name=message]').val('');
+
+            // Reset the input's height
+            adjustInputHeight();
+
+            // Scroll to the bottom of the container when a new message is added
+            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+            // Send the user message and sentiment to the server
+            var sentiment = $('input[name=sentiment]').val(); // Get the sentiment value
+            $.post("/chat", {
+                prompt: userMessage,
+                sentiment: sentiment // Pass sentiment to the server
+            }, function(response) {
+                // Display the bot's response
+                $('.chat-messages').append('<div class="message-container"><div class="chatbot-profile"><img src="static/logo.png" alt="EnSys Profile Image"></div><div class="message">' + response + '</div></div>');
+
+                // Scroll to the bottom of the container after adding the response
+                $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+                // Re-enable input elements after processing
+                toggleInputElements(false);
+            }).fail(function() {
+                // Handle AJAX request failure (e.g., server not responding)
+                $('.chat-messages').append('<div class="message-container"><div class="message">Something went wrong</div></div>');
+                $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+
+                // Re-enable input elements after processing
+                toggleInputElements(false);
+            });
+        });
+
+            // Adjust input height initially
+            adjustInputHeight();
+        });
+
+    function endChat() {
+        window.location.href = 'https://forms.gle/3E1qQ76MvbNRFf947'; //  URL link to Google Form
+    }
     </script>
 </body>
 </html>
