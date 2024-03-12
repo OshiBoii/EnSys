@@ -1,12 +1,11 @@
-# Importing Libraries
-from flask import Flask, render_template, request, url_for  # Add url_for import
-from Bot import EnSysBot
+from flask import Flask, render_template, request
+from ChatBot import ChatBot
 
 # Creating the Flask App
 app = Flask(__name__)
 
-# Importing Bot Definition
-chatbot = EnSysBot("gpt-4")
+# Initialize the chatbot
+chatbot = ChatBot()
 
 @app.route('/')
 def index():
@@ -34,7 +33,7 @@ def chat():
         return 'END CHAT'
 
     # Generate and Print the Response from ChatBot
-    response = chatbot.generate_response(prompt)
+    response = chatbot.bot.generate_response(prompt)
     return response
 
 if __name__ == '__main__':

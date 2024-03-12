@@ -1,24 +1,41 @@
 from Bot import EnSysBot
 
-'''Choose whichever model you want to use'''
-# engine = "gpt-3.5-turbo"
-# engine = "gpt-3.5-turbo-16k"
-engine = "gpt-4"
+class ChatBot:
+    def __init__(self):
+        self.bot = EnSysBot("gpt-4", [])  # Initialize with empty conversation history
 
-'''
-Creating the ChatBot
-Each Object of "OpenAIBot(engine)" will retain the conversation history and context unless the session is terminated
-'''
-chatbot = EnSysBot(engine)
+    def load_conversations_from_txt(self, file_path):
+        conversations = []
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            conversation = []
+            for line in lines:
+                line = line.strip()
+                if line:
+                    conversation.append(line)
+                else:
+                    if conversation:
+                        conversations.append(conversation)
+                    conversation = []
+            if conversation:
+                conversations.append(conversation)
+        return conversations
 
-while True:
-    # Get Prompt from User
-    prompt = input()
+    def start_chat(self):
+        print("Bot: You can start chatting now. Type 'quit' to end the conversation.")
+        # Load conversations from the .txt file
+        conversations = self.load_conversations_from_txt("conversation_data.txt")
+        # Initialize the chatbot with the conversation data
+        self.bot = EnSysBot("gpt-4", conversations)
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() == 'quit':
+                print("Bot: Goodbye!")
+                break
+            response = self.bot.generate_response(user_input)
+            print("Bot:", response)
 
-    # User can stop the chat by sending 'End Chat' as a Prompt
-    if prompt.upper() == 'END CHAT':
-        break
-
-    # Generate and Print the Response from ChatBot
-    response = chatbot.generate_response(prompt)
-    print(response)
+# Testing the ChatBot
+if __name__ == "__main__":
+    chatbot = ChatBot()
+    chatbot.start_chat()
